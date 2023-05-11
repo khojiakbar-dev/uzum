@@ -36,12 +36,17 @@ export function header(place) {
    accountName.innerHTML = 'Войти'
    accountName.href = '/pages/registration.html'
    saved.innerHTML = 'Избранное'
-   saved.href = '#'
+   saved.href = '/pages/saved.html'
    korzina.innerHTML = 'Корзина'
    korzina.href = '#'
    counter.innerHTML = 0
    catalog.innerHTML = 'Каталог'
 
+
+   uzum_icon.onclick = () => {
+      location.assign('/index.html')
+   }
+   
    body.prepend(header)
    header.append(uzum_icon, catalog, form, accountImg, accountName, saved, korzina, divCounter)
    form.append(divSearch)

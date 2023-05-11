@@ -255,19 +255,6 @@
 
 
 
-.show {
-    display: block;
-}
-
-.hide {
-    display: none;
-}
-
-.fade {
-    animation-name: fade;
-    animation-duration: 1.5s;
-}
-
 
 
 .productsCont {
@@ -493,15 +480,14 @@
             overflow: hidden;
             overflow-y: scroll;
 
-            min-width: 100px ;
+            min-width: 100px;
 
-            border: 2px solid #7000FF ; 
 
             padding: 10px;
 
 
             .swiperImg {
-                width: 83px;
+                width: 103px;
                 height: 111px;
             }
         }
@@ -514,11 +500,12 @@
             padding-left: 10px;
             padding-right: 10px;
 
-            width: 1590px;
+            min-width: 450px;
             height: 506px;
             background-color: #edecec;
 
             border: 2px solid #0000;
+            overflow: hidden;
 
             .productImgs {
                 width: 400px;
@@ -526,9 +513,9 @@
 
                 display: flex;
                 align-items: center;
-                
                 overflow: hidden;
             }
+
             .carouselImg {
                 width: 400px;
                 height: 506px;
@@ -641,4 +628,122 @@
             }
         }
     }
+}
+
+.show {
+    display: block;
+}
+
+.hide {
+    display: none;
+}
+
+.fade {
+    animation-name: fade;
+    animation-duration: 1.5s;
+}
+
+
+.swiperImg {
+    width: 50px;
+    height: 50px;
+}
+
+
+
+.savedCont {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 100px;
+    width: 100%;
+
+    max-width: 1920px;
+
+    margin: 0px auto;
+
+    position: relative;
+
+    padding: 70px;
+
+
+    
+    
+    .productBox {
+        width: 230px;
+        height: 389px;
+        
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+        position: relative;
+        
+        
+        
+        .productImg {
+            width: 230px;
+            height: 300px;
+        }
+        
+        .savedImg {
+            position: absolute;
+            top: 10px;
+            cursor: pointer;
+        }
+        
+        .bottomSide {
+            display: flex;
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 5px;
+            
+            .addProduct {
+                position: absolute;
+                bottom: 0px;
+                right: 10px;
+            }
+            
+            .title {
+                font-style: normal;
+                font-weight: 500;
+                font-size: 14px;
+                line-height: 17px;
+            }
+            
+            .spanDiscount {
+                font-family: 'Gilroy';
+                font-style: normal;
+                font-weight: 500;
+                font-size: 12px;
+                line-height: 15px;
+                
+                text-decoration-line: line-through;
+                
+                color: #ACACAC;
+            }
+            
+            .spanOrigin {
+                font-style: normal;
+                font-weight: 500;
+                font-size: 14px;
+                line-height: 17px;
+            }
+        }
+        
+        
+        
+    }
+}
+
+center {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+
+    margin: 140px auto;
+
 }

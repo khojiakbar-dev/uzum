@@ -25,8 +25,7 @@ function showSlides(n) {
         slideIndex = sliders.length - 1
     }
 
-    sliders.forEach(el => el.classList.add('hide'))
-
+    sliders.forEach(el =>  el.classList.add('hide'))
     sliders[slideIndex].classList.remove('hide')
     sliders[slideIndex].classList.add('show')
 }

@@ -4,13 +4,13 @@ let pc = document.querySelector('.pc')
 let audio = document.querySelector('.audio')
 let tv = document.querySelector('.tv')
 let kitchen = document.querySelector('.kitchen')
-
+let saveds = JSON.parse(localStorage.getItem('users')) || [];
 
 axios.get("http://localhost:3000/goods")
     .then(res => reload(res.data))
 
 
-function reload(arr) {
+export function reload(arr) {
     for (let item of arr) {
         let productBox = document.createElement('div')
         let topSide = document.createElement('div')
@@ -42,6 +42,19 @@ function reload(arr) {
 
         title.onclick = () => {
             location.assign("/pages/productid.html?id=" + item.id);
+        }
+
+        savedImg.onclick = () => {
+            if (!saveds.includes(item.id)) {
+                saveds.push(item.id);
+                localStorage.setItem("users", JSON.stringify(saveds));
+                savedImg.src = '/public/savedActive.svg'
+            }
+        }
+
+
+        if (saveds.includes(item.id)) {
+            savedImg.src = '/public/savedActive.svg'
         }
 
         if (item.type === 'furniture') {
