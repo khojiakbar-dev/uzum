@@ -6,8 +6,8 @@ header()
 
 
 
-
-axios.get("http://localhost:3000/goods")
+const ApiUrl = 'http://localhost:3000/goods'
+axios.get(ApiUrl)
     .then(res => product_reload(res.data, productCont))
 const url = location
 const id = url.href.split('=').at(-1)
@@ -81,7 +81,7 @@ function product_reload(arr, place) {
             numberCount.innerHTML = "1"
             plus.innerHTML = '+'
             advice.innerHTML =
-                'Станьте востребованным разработчиком. Вы изучите основы программирования и основныеконцепции компьютерных наук, цифровые технологии, операционные системы, программное обеспечение, базы данных, системы аналитики, языки программирования и многое другое. Познакомитесь с тестированием и системныманализом. На программе сможете сделать осознанный выбор специализации и технологий, прокачаться ввыбранном направлении.'
+            'Станьте востребованным разработчиком. Вы изучите основы программирования и основныеконцепции компьютерных наук, цифровые технологии, операционные системы, программное обеспечение, базы данных, системы аналитики, языки программирования и многое другое. Познакомитесь с тестированием и системныманализом. На программе сможете сделать осознанный выбор специализации и технологий, прокачаться ввыбранном направлении.'
             addBasket.innerHTML = 'Добавить в корзину'
             addSaved.innerHTML = 'Добавить в избранное'
             opisanie.innerHTML = 'Описание товара'
@@ -137,13 +137,27 @@ function product_reload(arr, place) {
             }
 
             addSaved.onclick = () => {
-                if (!saveds.includes(item.id)) {
-                    saveds.push(item.id);
-                    localStorage.setItem("users", JSON.stringify(saveds));
+                if(item.isLiked === true){
                     addSaved.innerHTML = 'Добавить в избранное'
+                    axios.patch(ApiUrl + '/' + item.id, {
+                        isLiked: false
+                    })
+                } else {
+                    addSaved.innerHTML = 'Добавлен'
+                    addSaved.style.background = 'violet'
+                    addSaved.style.border = 'none'
+                    axios.patch(ApiUrl + '/' + item.id, {
+                        isLiked: true
+                    })
                 }
             }
-
+            if(item.isLiked === true){
+                addSaved.innerHTML = 'Добавлен'
+                addSaved.style.background = 'violet'
+                addSaved.style.border = 'none'
+            } else {
+                addSaved.innerHTML = 'Добавить в избранное'
+            }
 
             
 

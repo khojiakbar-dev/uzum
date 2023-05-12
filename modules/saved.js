@@ -4,14 +4,12 @@ let locData = JSON.parse(localStorage.getItem('users'))
 let cont = document.querySelector('.container')
 let productsCont = document.querySelector('.savedCont')
 let saveds = JSON.parse(localStorage.getItem('users')) || [];
-
-        axios.get('http://localhost:3000/goods')
+const url = 'http://localhost:3000/goods'
+        axios.get(url)
             .then(res => {
                  for(let item of res.data) {
-                    for(let id of locData){
-                        if(item.id === id) {
-                            reload(item)
-                        }
+                    if(item.isLiked === true){
+                        reload(item)
                     }
                  }
             })
@@ -43,7 +41,8 @@ export function reload(item) {
     spanDiscount.innerHTML = item.price
     spanOrigin.innerHTML = item.price
     addProduct.src = '/public/buyCard.svg'
-    savedImg.src = '/public/saved.svg'
+    item.isLiked === true ? savedImg.src = '/public/savedActive.svg' :
+    savedImg.src = '/public/saved.svg' 
     // title.href = '/pages/productid.html'
 
     title.onclick = () => {
@@ -57,13 +56,9 @@ export function reload(item) {
     
 
     savedImg.onclick = () => {
-        if (saveds.includes(item.id)) {
-            saveds = saveds.filter((el) => el.id !== item.id);
-            savedImg.src = '/public/saved.svg'
-        } else {
-            saveds.push(item.id);
-            savedImg.src = "/public/savedActive.svg";
-        }
+        axios.patch(url + '/' + item.id, {
+            isLiked: false
+        })
     }
 
     productsCont.append(productBox)
@@ -72,6 +67,6 @@ export function reload(item) {
     bottomSide.append(title, spanDiscount, spanOrigin, addProduct)
 }
 
-if(saveds.length === 0) {
-    location.assign('/pages/empty.html')
-}
+// if(saveds.length === 0) {
+//     location.assign('/pages/empty.html')
+// }

@@ -5,8 +5,8 @@ let audio = document.querySelector('.audio')
 let tv = document.querySelector('.tv')
 let kitchen = document.querySelector('.kitchen')
 let saveds = JSON.parse(localStorage.getItem('users')) || [];
-
-axios.get("http://localhost:3000/goods")
+const url = 'http://localhost:3000/goods'
+axios.get(url)
     .then(res => reload(res.data))
 
 
@@ -37,7 +37,9 @@ export function reload(arr) {
         spanDiscount.innerHTML = item.price
         spanOrigin.innerHTML = item.price
         addProduct.src = '/public/buyCard.svg'
-        savedImg.src = '/public/saved.svg'
+        item.isLiked === true ? savedImg.src = '/public/savedActive.svg' :
+        savedImg.src = '/public/saved.svg' 
+
         // title.href = '/pages/productid.html'
 
         title.onclick = () => {
@@ -45,11 +47,14 @@ export function reload(arr) {
         }
 
         savedImg.onclick = () => {
-            if (!saveds.includes(item.id)) {
-                saveds.push(item.id);
-                localStorage.setItem("users", JSON.stringify(saveds));
-                savedImg.src = '/public/savedActive.svg'
-            }
+            // if (!saveds.includes(item.id)) {
+            //     saveds.push(item.id);
+            //     localStorage.setItem("users", JSON.stringify(saveds));
+            //     savedImg.src = '/public/savedActive.svg'
+            // }
+            axios.patch(url + '/' + item.id, {
+                isLiked: true
+            })
         }
 
 
