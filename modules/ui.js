@@ -4,12 +4,25 @@ let pc = document.querySelector('.pc')
 let audio = document.querySelector('.audio')
 let tv = document.querySelector('.tv')
 let kitchen = document.querySelector('.kitchen')
-let saveds = JSON.parse(localStorage.getItem('users')) || [];
+let savedProducts = JSON.parse(localStorage.getItem('product')) || [];
+let basketProducts = JSON.parse(localStorage.getItem('basket')) || [];
+let catalogH3 = document.querySelectorAll('.lengthPR')
+let furnitureCategory = document.querySelector('.furnitureCategory')
 const url = 'http://localhost:3000/goods'
 axios.get(url)
-    .then(res => reload(res.data))
+    .then(res => {
+        reload(res.data)
+    }
+    )
 
-
+furnitureCategory.onclick = () => {
+    axios.get(url)
+        .then(res => reload(res.data.filter(i => {
+            if(i.type === 'furniture'){
+                return i
+            }
+        })))
+}
 export function reload(arr) {
     for (let item of arr) {
         let productBox = document.createElement('div')
@@ -21,6 +34,9 @@ export function reload(arr) {
         let spanOrigin = document.createElement('span')
         let addProduct = document.createElement('img')
         let savedImg = document.createElement('img')
+        let discountImg = document.createElement('img')
+
+        let dsPrc = 0
 
         productBox.classList.add('productBox')
         topSide.classList.add('topSide')
@@ -31,70 +47,104 @@ export function reload(arr) {
         spanOrigin.classList.add('spanOrigin')
         addProduct.classList.add('addProduct')
         savedImg.classList.add('savedImg')
+        discountImg.classList.add('discountImg')
 
+        if(item.salePercentage > 0) {
+            discountImg.src = '/public/discountImg.svg'
+        }else {
+            discountImg.style.display = 'none'
+        }
         productImg.src = item.media[0]
         title.innerHTML = item.title
-        spanDiscount.innerHTML = item.price
-        spanOrigin.innerHTML = item.price
+
+        if (item.salePercentage > 0) {
+            dsPrc = Math.floor((item.price / 100) * item.salePercentage)
+        } else {
+            dsPrc = item.price
+            spanDiscount.style.display = 'none'
+        }
+
+        spanOrigin.innerHTML = dsPrc + ' сум'
+        spanDiscount.innerHTML = item.price + 'сум'
         addProduct.src = '/public/buyCard.svg'
-        item.isLiked === true ? savedImg.src = '/public/savedActive.svg' :
-        savedImg.src = '/public/saved.svg' 
+        savedImg.src = '/public/saved.svg'
 
-        // title.href = '/pages/productid.html'
-
-        title.onclick = () => {
+        productBox.onclick = () => {
             location.assign("/pages/productid.html?id=" + item.id);
         }
 
-        savedImg.onclick = () => {
-            // if (!saveds.includes(item.id)) {
-            //     saveds.push(item.id);
-            //     localStorage.setItem("users", JSON.stringify(saveds));
-            //     savedImg.src = '/public/savedActive.svg'
-            // }
-            axios.patch(url + '/' + item.id, {
-                isLiked: true
-            })
-        }
-
-
-        if (saveds.includes(item.id)) {
+        if (!savedProducts.includes(item.id)) {
+            savedImg.src = '/public/saved.svg'
+        } else {
             savedImg.src = '/public/savedActive.svg'
         }
+        savedImg.onclick = () => {
+            if (!savedProducts.includes(item.id)) {
+                savedProducts.push(item.id)
+                savedImg.src = '/public/savedActive.svg'
+                localStorage.setItem("product", JSON.stringify(savedProducts));
+            } else {
+                savedProducts = savedProducts.filter(el => el !== item.id)
+                localStorage.setItem("product", JSON.stringify(savedProducts));
+                savedImg.src = '/public/saved.svg'
+            }
+        }
 
+
+        addProduct.onclick = () => {
+            if (!basketProducts.includes(item.id)) {
+                basketProducts.push(item.id)
+                localStorage.setItem("basket", JSON.stringify(basketProducts));
+            } else {
+                basketProducts = basketProducts.filter(el => el !== item.id)
+                localStorage.setItem("basket", JSON.stringify(basketProducts));
+            }
+        }
         if (item.type === 'furniture') {
             furniture.append(productBox)
             productBox.append(topSide, bottomSide)
-            topSide.append(productImg, savedImg)
+            topSide.append(productImg, savedImg ,discountImg)
             bottomSide.append(title, spanDiscount, spanOrigin, addProduct)
         }
 
         if (item.type === 'PC') {
             pc.append(productBox)
             productBox.append(topSide, bottomSide)
-            topSide.append(productImg, savedImg)
+            topSide.append(productImg, savedImg ,discountImg)
             bottomSide.append(title, spanDiscount, spanOrigin, addProduct)
         }
 
         if (item.type === 'audio') {
             audio.append(productBox)
             productBox.append(topSide, bottomSide)
-            topSide.append(productImg, savedImg)
+            topSide.append(productImg, savedImg ,discountImg)
             bottomSide.append(title, spanDiscount, spanOrigin, addProduct)
         }
 
         if (item.type === 'TV') {
             tv.append(productBox)
             productBox.append(topSide, bottomSide)
-            topSide.append(productImg, savedImg)
+            topSide.append(productImg, savedImg ,discountImg)
             bottomSide.append(title, spanDiscount, spanOrigin, addProduct)
         }
 
         if (item.type === 'kitchen') {
             kitchen.append(productBox)
             productBox.append(topSide, bottomSide)
-            topSide.append(productImg, savedImg)
+            topSide.append(productImg, savedImg ,discountImg)
             bottomSide.append(title, spanDiscount, spanOrigin, addProduct)
         }
+
+        const type = item.type;
+        const similarProducts = arr.filter(product => product.type === type);
+        const similarProductsLength = similarProducts.length;
+
+        catalogH3.forEach(it => {
+            it.innerHTML = `${similarProductsLength} товаров`
+        })
+
+
     }
 }
+
+

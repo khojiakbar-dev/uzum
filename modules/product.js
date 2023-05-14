@@ -1,35 +1,34 @@
 import { header } from '/modules/header'
 import axios from 'axios'
 let productCont = document.querySelector('.productInfo')
-let saveds = JSON.parse(localStorage.getItem('users')) || [];
+let savedProducts = JSON.parse(localStorage.getItem('product')) || [];
+let basketProducts = JSON.parse(localStorage.getItem('basket')) || [];
 header()
 
-
-
 const ApiUrl = 'http://localhost:3000/goods'
-axios.get(ApiUrl)
-    .then(res => product_reload(res.data, productCont))
 const url = location
 const id = url.href.split('=').at(-1)
-console.log(id);
+
+axios.get(ApiUrl)
+    .then(res => {
+        product_reload(res.data, productCont)
+    })
+
 
 function product_reload(arr, place) {
     place.innerHTML = "";
     for (let item of arr) {
         if (item.id === +id) {
-            // return place
-
             let topOfProduct = document.createElement('div')
             let bottomOfProduct = document.createElement('div')
             let left_scroll = document.createElement('div')
             let sliderProduct = document.createElement('div')
             let productImgs = document.createElement('div')
-
             let info = document.createElement('div')
             let titleRp = document.createElement('h2')
             let prices = document.createElement('div')
             let newPrice = document.createElement('span')
-            let discountPrice = document.createElement('span')
+            let originPC = document.createElement('span')
             let counter = document.createElement('div')
             let minus = document.createElement('span')
             let numberCount = document.createElement('span')
@@ -39,7 +38,6 @@ function product_reload(arr, place) {
             let btns = document.createElement('div')
             let addBasket = document.createElement('button')
             let addSaved = document.createElement('button')
-
             let descProduct = document.createElement('div')
             let opisanie = document.createElement('h2')
             let moreInfo = document.createElement('p')
@@ -48,9 +46,12 @@ function product_reload(arr, place) {
             let leftSlider = document.createElement('img')
             let rightSlider = document.createElement('img')
 
+            let totalCost = 0
+            let count = 1
+            let dsPrc = 0
+
             leftSlider.classList.add('leftSlider')
             rightSlider.classList.add('rightSlider')
-
             topOfProduct.classList.add('topOfProduct')
             bottomOfProduct.classList.add('bottomOfProduct')
             left_scroll.classList.add('left_scroll')
@@ -59,7 +60,7 @@ function product_reload(arr, place) {
             titleRp.classList.add('titleRp')
             prices.classList.add('prices')
             newPrice.classList.add('newPrice')
-            discountPrice.classList.add('discountPrice')
+            originPC.classList.add('discountPrice')
             counter.classList.add('counter')
             minus.classList.add('minus')
             numberCount.classList.add('numberCount')
@@ -74,14 +75,15 @@ function product_reload(arr, place) {
             moreInfo.classList.add('moreInfo')
             carousel.classList.add('carousel')
             productImgs.classList.add('productImgs')
+
             titleRp.innerHTML = item.title
             newPrice.innerHTML = `${orgPrice} sum`
-            discountPrice.innerHTML = `${orgPrice} sum`
+            originPC.innerHTML = `${orgPrice} sum`
             minus.innerHTML = '-'
             numberCount.innerHTML = "1"
             plus.innerHTML = '+'
             advice.innerHTML =
-            'Станьте востребованным разработчиком. Вы изучите основы программирования и основныеконцепции компьютерных наук, цифровые технологии, операционные системы, программное обеспечение, базы данных, системы аналитики, языки программирования и многое другое. Познакомитесь с тестированием и системныманализом. На программе сможете сделать осознанный выбор специализации и технологий, прокачаться ввыбранном направлении.'
+                'Станьте востребованным разработчиком. Вы изучите основы программирования и основныеконцепции компьютерных наук, цифровые технологии, операционные системы, программное обеспечение, базы данных, системы аналитики, языки программирования и многое другое. Познакомитесь с тестированием и системныманализом. На программе сможете сделать осознанный выбор специализации и технологий, прокачаться ввыбранном направлении.'
             addBasket.innerHTML = 'Добавить в корзину'
             addSaved.innerHTML = 'Добавить в избранное'
             opisanie.innerHTML = 'Описание товара'
@@ -89,10 +91,10 @@ function product_reload(arr, place) {
             leftSlider.src = '/public/arrow-left.svg'
             rightSlider.src = '/public/arrow-right.svg'
 
-
             place.append(topOfProduct, bottomOfProduct)
             topOfProduct.append(left_scroll, sliderProduct, info)
             sliderProduct.append(leftSlider, productImgs, rightSlider)
+
             for (let imgs of item.media) {
                 let swiperImg = document.createElement('img')
                 swiperImg.classList.add('swiperImg')
@@ -104,101 +106,95 @@ function product_reload(arr, place) {
                 left_scroll.append(swiperImg)
                 productImgs.append(carouselImg)
             }
+
             info.append(titleRp, prices, counter, hr, advice, btns)
-            prices.append(newPrice, discountPrice)
+            prices.append(newPrice, originPC)
             counter.append(minus, numberCount, plus)
             btns.append(addBasket, addSaved)
             bottomOfProduct.append(descProduct, carousel)
             descProduct.append(opisanie, moreInfo)
 
+            if (item.salePercentage > 0) {
+                dsPrc = Math.floor((item.price / 100) * item.salePercentage)
+            } else {
+                dsPrc = item.price
+                originPC.style.display = 'none'
+            }
 
-            // item.newPrice = item.price * 100 / item.salePercentage
-            // console.log(item.newPrice);
+            newPrice.innerHTML = dsPrc + ' сум'
+            originPC.innerHTML = item.price + 'сум'
 
-
-
-            let totalCost = 0
             plus.onclick = () => {
-                numberCount.innerHTML++
-                let price = orgPrice * +numberCount.innerHTML
+                let price = orgPrice * count
+                count++
+                numberCount.innerHTML = count
                 totalCost = price
-                discountPrice.innerHTML = `${price} sum`
+                originPC.innerHTML = `${price} sum`
+                newPrice.innerHTML = (dsPrc * count + ' сум').toString().replace(/(\d) (?=(\d{3})+(D|$))/g, '$1 ' + " sum")
             }
 
             minus.onclick = () => {
                 if (numberCount.innerHTML !== "1") {
-                    numberCount.innerHTML--
+                    count--
+                    numberCount.innerHTML = count
                     totalCost -= orgPrice
-                    discountPrice.innerHTML = `${totalCost} sum`
-
-
-                }
-
-            }
-
-            addSaved.onclick = () => {
-                if(item.isLiked === true){
-                    addSaved.innerHTML = 'Добавить в избранное'
-                    axios.patch(ApiUrl + '/' + item.id, {
-                        isLiked: false
-                    })
-                } else {
-                    addSaved.innerHTML = 'Добавлен'
-                    addSaved.style.background = 'violet'
-                    addSaved.style.border = 'none'
-                    axios.patch(ApiUrl + '/' + item.id, {
-                        isLiked: true
-                    })
+                    originPC.innerHTML = `${totalCost} sum`
+                    newPrice.innerHTML = `${totalCost} sum`
                 }
             }
-            if(item.isLiked === true){
+
+            if (!savedProducts.includes(item.id)) {
+                addSaved.innerHTML = 'Добавить в избранное'
+            } else {
                 addSaved.innerHTML = 'Добавлен'
                 addSaved.style.background = 'violet'
                 addSaved.style.border = 'none'
-            } else {
-                addSaved.innerHTML = 'Добавить в избранное'
+            }
+            addSaved.onclick = () => {
+                if (!savedProducts.includes(item.id)) {
+                    savedProducts.push(item.id)
+                    addSaved.innerHTML = 'Добавлен'
+                    addSaved.style.background = 'violet'
+                    addSaved.style.border = 'none'
+                    localStorage.setItem("product", JSON.stringify(savedProducts));
+                } else {
+                    savedProducts = savedProducts.filter(el => el !== item.id)
+                    localStorage.setItem("product", JSON.stringify(savedProducts));
+                    addSaved.innerHTML = 'Добавить в избранное'
+                    addSaved.style.background = 'transparent'
+                    addSaved.style.border = '1px solid #7000FF'
+                }
             }
 
-            
+            if (!basketProducts.includes(item.id)) {
+                addBasket.innerHTML = 'Добавить в корзину'
+                addBasket.style.background = 'transparent'
+                addBasket.style.border = '1px solid #7000FF'
+                addBasket.style.color = '#7000FF'
+            } else {
+                addBasket.innerHTML = 'Добавлено в корзину'
+                addBasket.style.background = '#7000FF'
+                addBasket.style.color = 'white'
+                addBasket.style.border = 'none'
+            }
 
-          if(saveds.includes(item.id)){
-            addSaved.innerHTML = 'Добавлен'
-            addSaved.style.background = 'violet'
-            addSaved.style.border = 'none'
-          }
-
-            // let prev = document.querySelector('.offer__slider-left')
-            // let next = document.querySelector('.offer__slider-right')
-            // let slider = document.querySelector('.carouselImg')
-
-            // let slideIndex = 0
-            // SlidesProduct(slideIndex)
-
-            // function SlidesProduct(n) {
-
-            //     if (n >= slider.length) {
-            //         slideIndex = 0
-            //     }
-            //     if (n < 0) {
-            //         slideIndex = slider.length - 1
-            //     }
-
-            //     slider.forEach(el => el.classList.add('hide'))
-
-            //     slider[slideIndex].classList.remove('hide')
-            //     slider[slideIndex].classList.add('show')
-            // }
-
-            // leftSlider.onclick = () => {
-            //     slideIndex--
-            //     SlidesProduct(slideIndex)
-            // }
-            // rightSlider.onclick = () => {
-            //     slideIndex++
-            //     SlidesProduct(slideIndex)
-            // }
-
-
+            addBasket.onclick = () => {
+                if (!basketProducts.includes(item.id)) {
+                    basketProducts.push(item.id)
+                    addBasket.innerHTML = 'Добавлено в корзину'
+                    addBasket.style.background = '#7000FF'
+                    addBasket.style.color = 'white'
+                    addBasket.style.border = 'none'
+                    localStorage.setItem("basket", JSON.stringify(basketProducts));
+                } else {
+                    basketProducts = basketProducts.filter(el => el !== item.id)
+                    localStorage.setItem("basket", JSON.stringify(basketProducts));
+                    addBasket.innerHTML = 'Добавить в корзину'
+                    addBasket.style.background = 'transparent'
+                    addBasket.style.border = '1px solid #7000FF'
+                    addBasket.style.color = '#7000FF'
+                }
+            }
         }
     }
 }
