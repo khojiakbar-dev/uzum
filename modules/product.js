@@ -4,6 +4,10 @@ let productCont = document.querySelector('.productInfo')
 let savedProducts = JSON.parse(localStorage.getItem('product')) || [];
 let basketProducts = JSON.parse(localStorage.getItem('basket')) || [];
 header()
+import {footer} from '/modules/footer.js'
+
+
+footer()
 
 const ApiUrl = 'http://localhost:3000/goods'
 const url = location
@@ -16,7 +20,7 @@ axios.get(ApiUrl)
 
 
 function product_reload(arr, place) {
-    place.innerHTML = "";
+    // place.innerHTML = ""
     for (let item of arr) {
         if (item.id === +id) {
             let topOfProduct = document.createElement('div')
@@ -47,6 +51,7 @@ function product_reload(arr, place) {
             let rightSlider = document.createElement('img')
 
             let totalCost = 0
+            let totalds = 0
             let count = 1
             let dsPrc = 0
 
@@ -75,10 +80,7 @@ function product_reload(arr, place) {
             moreInfo.classList.add('moreInfo')
             carousel.classList.add('carousel')
             productImgs.classList.add('productImgs')
-
             titleRp.innerHTML = item.title
-            newPrice.innerHTML = `${orgPrice} sum`
-            originPC.innerHTML = `${orgPrice} sum`
             minus.innerHTML = '-'
             numberCount.innerHTML = "1"
             plus.innerHTML = '+'
@@ -122,15 +124,18 @@ function product_reload(arr, place) {
             }
 
             newPrice.innerHTML = dsPrc + ' сум'
-            originPC.innerHTML = item.price + 'сум'
+            originPC.innerHTML = orgPrice + 'сум'
 
             plus.onclick = () => {
-                let price = orgPrice * count
                 count++
                 numberCount.innerHTML = count
+                let price = orgPrice * count
+                let prcDs = dsPrc * count
                 totalCost = price
-                originPC.innerHTML = `${price} sum`
-                newPrice.innerHTML = (dsPrc * count + ' сум').toString().replace(/(\d) (?=(\d{3})+(D|$))/g, '$1 ' + " sum")
+                totalds = prcDs
+
+                originPC.innerHTML = `${totalCost} сум`
+                newPrice.innerHTML = `${prcDs} сум`
             }
 
             minus.onclick = () => {
@@ -138,8 +143,9 @@ function product_reload(arr, place) {
                     count--
                     numberCount.innerHTML = count
                     totalCost -= orgPrice
-                    originPC.innerHTML = `${totalCost} sum`
-                    newPrice.innerHTML = `${totalCost} sum`
+                    totalds -= dsPrc
+                    originPC.innerHTML = `${totalCost} сум`
+                    newPrice.innerHTML = `${totalds} сум`
                 }
             }
 

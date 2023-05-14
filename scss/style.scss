@@ -53,7 +53,7 @@
         .listProduct {
             display: none;
             width: 700px;
-            height: 250px;
+            height: 200px;
             position: absolute;
             top: 70px;
 
@@ -402,6 +402,7 @@
 
     margin-top: 100px;
 
+    
     .left,
     .middle,
     .right {
@@ -409,10 +410,12 @@
         align-items: flex-start;
         gap: 23px;
         flex-direction: column;
-
-
+        
+        
         a {
             cursor: pointer;
+            text-decoration: none;
+            color: black;
         }
 
         .aboutUs {
@@ -451,7 +454,14 @@
             display: flex;
             align-items: center;
             gap: 5px;
-
+            .apple {
+                text-decoration: none;
+                color: #000000;
+            }
+            .google {
+                text-decoration: none;
+                color: #000000;
+            }
             .imgGoogle {
                 margin-left: 20px;
             }
@@ -465,6 +475,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+
         }
     }
 }
@@ -506,7 +517,6 @@
             overflow: hidden;
             overflow-y: scroll;
 
-            min-width: 100px;
 
             padding: 10px;
 
@@ -521,7 +531,7 @@
             align-items: center;
             gap: 30px;
 
-            min-width: 650px;
+            width: 1920px;
             height: 546px;
 
             border: 2px solid #9643FF;
@@ -784,7 +794,7 @@ center {
         justify-content: flex-start;
         flex-direction: column;
 
-        gap: 30px;
+        gap: 70px;
         padding: 30px;
 
         width: 906px;
@@ -797,7 +807,7 @@ center {
 
         .items {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 30px;
             width: 730px;
             height: 187px;
@@ -818,7 +828,7 @@ center {
                 display: flex;
                 align-items: flex-start;
                 flex-direction: column;
-                gap: 30px;
+                gap: 15px;
 
                 .title {
                     font-style: normal;

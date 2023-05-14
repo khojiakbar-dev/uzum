@@ -3,17 +3,18 @@ import axios from "axios"
 let locData = JSON.parse(localStorage.getItem('product'))
 let productsCont = document.querySelector('.savedCont')
 let savedProducts = JSON.parse(localStorage.getItem('product')) || [];
+let basketProducts = JSON.parse(localStorage.getItem('basket')) || [];
 
 const url = 'http://localhost:3000/goods'
 
 
 axios.get(url)
     .then(res => {
-        reload(locData, res.data)
+        reload(locData, res.data, productsCont)
     })
 
 
-export function reload(arrLoc, dataLoc) {
+export function reload(arrLoc, dataLoc, place) {
     for (let item of dataLoc) {
         for (let id of arrLoc) {
             if (item.id === +id) {
@@ -83,8 +84,17 @@ export function reload(arrLoc, dataLoc) {
                     }
                 }
 
+                addProduct.onclick = () => {
+                    if (!basketProducts.includes(item.id)) {
+                        basketProducts.push(item.id)
+                        localStorage.setItem("basket", JSON.stringify(basketProducts));
+                    } else {
+                        basketProducts = basketProducts.filter(el => el !== item.id)
+                        localStorage.setItem("basket", JSON.stringify(basketProducts));
+                    }
+                }
 
-                productsCont.append(productBox)
+                place.append(productBox)
                 productBox.append(topSide, bottomSide)
                 topSide.append(productImg, savedImg, discountImg)
                 bottomSide.append(title, spanDiscount, spanOrigin, addProduct)

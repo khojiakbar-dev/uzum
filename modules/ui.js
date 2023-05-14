@@ -18,7 +18,7 @@ axios.get(url)
 furnitureCategory.onclick = () => {
     axios.get(url)
         .then(res => reload(res.data.filter(i => {
-            if(i.type === 'furniture'){
+            if (i.type === 'furniture') {
                 return i
             }
         })))
@@ -49,9 +49,9 @@ export function reload(arr) {
         savedImg.classList.add('savedImg')
         discountImg.classList.add('discountImg')
 
-        if(item.salePercentage > 0) {
+        if (item.salePercentage > 0) {
             discountImg.src = '/public/discountImg.svg'
-        }else {
+        } else {
             discountImg.style.display = 'none'
         }
         productImg.src = item.media[0]
@@ -69,7 +69,7 @@ export function reload(arr) {
         addProduct.src = '/public/buyCard.svg'
         savedImg.src = '/public/saved.svg'
 
-        productBox.onclick = () => {
+        productImg.onclick = () => {
             location.assign("/pages/productid.html?id=" + item.id);
         }
 
@@ -103,35 +103,35 @@ export function reload(arr) {
         if (item.type === 'furniture') {
             furniture.append(productBox)
             productBox.append(topSide, bottomSide)
-            topSide.append(productImg, savedImg ,discountImg)
+            topSide.append(productImg, savedImg, discountImg)
             bottomSide.append(title, spanDiscount, spanOrigin, addProduct)
         }
 
         if (item.type === 'PC') {
             pc.append(productBox)
             productBox.append(topSide, bottomSide)
-            topSide.append(productImg, savedImg ,discountImg)
+            topSide.append(productImg, savedImg, discountImg)
             bottomSide.append(title, spanDiscount, spanOrigin, addProduct)
         }
 
         if (item.type === 'audio') {
             audio.append(productBox)
             productBox.append(topSide, bottomSide)
-            topSide.append(productImg, savedImg ,discountImg)
+            topSide.append(productImg, savedImg, discountImg)
             bottomSide.append(title, spanDiscount, spanOrigin, addProduct)
         }
 
         if (item.type === 'TV') {
             tv.append(productBox)
             productBox.append(topSide, bottomSide)
-            topSide.append(productImg, savedImg ,discountImg)
+            topSide.append(productImg, savedImg, discountImg)
             bottomSide.append(title, spanDiscount, spanOrigin, addProduct)
         }
 
         if (item.type === 'kitchen') {
             kitchen.append(productBox)
             productBox.append(topSide, bottomSide)
-            topSide.append(productImg, savedImg ,discountImg)
+            topSide.append(productImg, savedImg, discountImg)
             bottomSide.append(title, spanDiscount, spanOrigin, addProduct)
         }
 
@@ -142,8 +142,6 @@ export function reload(arr) {
         catalogH3.forEach(it => {
             it.innerHTML = `${similarProductsLength} товаров`
         })
-
-
     }
 }
 

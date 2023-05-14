@@ -1,18 +1,15 @@
 import axios from 'axios'
 
-
 let storeData = JSON.parse(localStorage.getItem('basket'))
 let leftBasket = document.querySelector('.leftBasket')
 let basketProducts = JSON.parse(localStorage.getItem('basket')) || [];
+let overallPrice = document.querySelector('.overallPrice')
 const url = 'http://localhost:3000/goods'
-
 
 axios.get(url)
     .then(res => {
         reload(storeData, res.data)
     })
-
-
 
 function reload(storeArr, dataLoc) {
     for (let item of dataLoc) {
@@ -22,31 +19,36 @@ function reload(storeArr, dataLoc) {
                 let left_item = document.createElement('div')
                 let right_item = document.createElement('div')
                 let img = document.createElement('img')
-                let title = document.createElement('h3')
+                let title = document.createElement('span')
                 let price = document.createElement('span')
+                let dsPrice = document.createElement('span')
                 let counter = document.createElement('div')
                 let minus = document.createElement('span')
                 let numberCount = document.createElement('span')
                 let plus = document.createElement('span')
                 let deleteBtn = document.createElement('button')
-                let dsPrc = 0
 
+                let dsPrc = 0
+                let totalCost = 0
+                let totalds = 0
+                let count = 1
 
                 items.classList.add('items')
                 left_item.classList.add('left_item')
                 right_item.classList.add('right_item')
                 img.classList.add('img')
-                title.classList.add('title')
+                title.classList.add('titlePP')
                 price.classList.add('price')
                 counter.classList.add('counter')
                 minus.classList.add('minus')
                 numberCount.classList.add('numberCount')
                 plus.classList.add('plus')
                 deleteBtn.classList.add('deleteBtn')
+                dsPrice.classList.add('dsPrice')
 
                 img.src = item.media[0]
                 title = item.title
-                price = item.price
+                let orgPrice = item.price
                 minus.innerHTML = '-'
                 plus.innerHTML = '+'
                 numberCount.innerHTML = '1'
@@ -55,23 +57,49 @@ function reload(storeArr, dataLoc) {
                 leftBasket.append(items)
                 items.append(left_item, right_item)
                 left_item.append(img)
-                right_item.append(title, price, counter, deleteBtn)
+                right_item.append(title, price, dsPrice, counter, deleteBtn)
                 counter.append(minus, numberCount, plus)
-
 
                 img.onclick = () => {
                     location.assign("/pages/productid.html?id=" + item.id);
                 }
 
-                // if (item.salePercentage > 0) {
-                //     dsPrc = Math.floor((item.price / 100) * item.salePercentage)
-                // } else {
-                //     dsPrc = item.price
-                //     spanDiscount.style.display = 'none'
-                // }
+                if (item.salePercentage > 0) {
+                    dsPrc = Math.floor((item.price / 100) * item.salePercentage)
+                    price.style.textDecoration = 'line-through'
+                } else {
+                    dsPrc = item.price
+                    dsPrice.style.display = 'none'
+                }
 
-                // spanOrigin.innerHTML = dsPrc + ' сум'
-                // spanDiscount.innerHTML = item.price + 'сум'
+                dsPrice.innerHTML = dsPrc + ' сум'
+                price.innerHTML = orgPrice + 'сум'
+
+                plus.onclick = () => {
+                    count++
+                    numberCount.innerHTML = count
+                    let prc = orgPrice * count
+                    let prcDs = dsPrc * count
+                    totalCost = prc
+                    totalds = prcDs
+
+                    price.innerHTML = `${totalCost} сум`
+                    dsPrice.innerHTML = `${prcDs} сум`
+                }
+
+                minus.onclick = () => {
+                    if (numberCount.innerHTML !== "1") {
+                        count--
+                        numberCount.innerHTML = count
+                        totalCost -= orgPrice
+                        totalds -= dsPrc
+                        price.innerHTML = `${totalCost} сум`
+                        dsPrice.innerHTML = `${totalds} сум`
+                    }
+                }
+
+
+
 
 
                 deleteBtn.onclick = () => {
